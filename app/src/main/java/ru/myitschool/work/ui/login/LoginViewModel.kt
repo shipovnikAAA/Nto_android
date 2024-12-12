@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import ru.myitschool.work.data.remote.LoginApi
-import ru.myitschool.work.data.remote.LoginErrorDto
+import ru.myitschool.work.data.remote.ErrorDto
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,9 +37,12 @@ class LoginViewModel @Inject constructor(
                 Log.e("LoginViewModel", "Login failed for $username", e)
                 e.response()?.errorBody()?.string()?.let { errorString ->
                     val gson = GsonBuilder().create()
-                    val errorDto = gson.fromJson(errorString, LoginErrorDto::class.java)
+                    val errorDto = gson.fromJson(errorString, ErrorDto::class.java)
                     _state.update { it.copy(error = errorDto.error) }
                 }
+            } catch (e: Exception) {
+                Log.e("LoginViewModel", "Login failed for $username", e)
+               _state.update { it.copy(error = "Unknown error: ${e.message}") }
             }
         }
     }

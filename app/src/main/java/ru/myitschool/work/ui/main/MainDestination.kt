@@ -3,4 +3,4 @@ package ru.myitschool.work.ui.main
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object MainDestination
+data class MainDestination(val username: String)

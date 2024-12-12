@@ -27,10 +27,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         binding.username.addTextChangedListener(TextChangedListener(binding, onChange = { viewModel.onUsernameChanged(it) }))
         binding.login.setOnClickListener {
-            viewModel.tryLogin(binding.username.text.toString()) {
+            val username = binding.username.text.toString()
+            viewModel.tryLogin(username) {
                 findNavController().apply {
                     popBackStack<LoginDestination>(true)
-                    navigate(MainDestination)
+                    navigate(MainDestination(username))
                 }
             }
         }
