@@ -27,11 +27,12 @@ class LoginViewModel @Inject constructor(
     private fun isUsernameValid(username: String): Boolean =
         !(username.length < 3 || username[0].isDigit() || !username.matches(Regex("^[a-zA-Z0-9]+$")))
 
-    fun tryLogin(username: String) {
+    fun tryLogin(username: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
                 api.auth(username)
                 Log.d("LoginViewModel", "Login success for $username")
+                onSuccess()
             } catch (e: HttpException) {
                 Log.e("LoginViewModel", "Login failed for $username", e)
                 e.response()?.errorBody()?.string()?.let { errorString ->
