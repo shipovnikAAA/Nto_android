@@ -12,6 +12,12 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
+
+
+    fun userClicked(texte: String) {
+        println(texte)
+    }
+
     private val _state = MutableStateFlow(true)
     val state = _state.asStateFlow()
 }
