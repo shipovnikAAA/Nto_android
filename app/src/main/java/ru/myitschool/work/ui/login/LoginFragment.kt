@@ -11,14 +11,10 @@ import ru.myitschool.work.utils.collectWhenStarted
 import ru.myitschool.work.utils.visibleOrGone
 import ru.myitschool.work.utils.TextChangedListener
 
-
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
     private var _binding: FragmentLoginBinding? = null
     private val binding: FragmentLoginBinding get() = _binding!!
-
-
-
 
     private val viewModel: LoginViewModel by viewModels()
 
@@ -26,19 +22,22 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentLoginBinding.bind(view)
 
-        binding.username.addTextChangedListener(TextChangedListener(binding))
-        val texte = binding.username.text.toString()
-        binding.login.setOnClickListener { viewModel.userClicked(texte) }
-
+        binding.username.addTextChangedListener(TextChangedListener(binding, onChange = { viewModel.onUsernameChanged(it) }))
+        binding.login.setOnClickListener {
+            viewModel.tryLogin(binding.username.text.toString())
+        }
         subscribe()
-
     }
-
-
 
     private fun subscribe() {
         viewModel.state.collectWhenStarted(this) { state ->
-            binding.loading.visibleOrGone(state)
+            binding.login.isEnabled = state.isLoginEnabled
+            if (state.error != null) {
+                binding.error.visibility = View.VISIBLE
+                binding.error.text = state.error
+            } else {
+                binding.error.visibility = View.GONE
+            }
         }
     }
 

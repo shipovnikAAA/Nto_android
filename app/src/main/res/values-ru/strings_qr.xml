@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="close_button">Закрыть</string>
+    <string name="login_button">Войти</string>
+    <string name="username_label">Логин</string>
+</resources>
