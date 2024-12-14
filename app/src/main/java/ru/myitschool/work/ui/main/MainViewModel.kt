@@ -1,6 +1,7 @@
 package ru.myitschool.work.ui.main
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.GsonBuilder
@@ -69,9 +70,11 @@ class MainViewModel @Inject constructor(
     }
   }
 
-  fun logout() {
+  fun logout(onLogout: () -> Unit) {
     viewModelScope.launch {
       dataStoreManager.setLastUsername("")
+      _state.update { MainState() }
+      onLogout()
     }
   }
 }

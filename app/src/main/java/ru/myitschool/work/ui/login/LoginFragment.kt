@@ -1,7 +1,6 @@
 package ru.myitschool.work.ui.login
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -11,7 +10,6 @@ import ru.myitschool.work.R
 import ru.myitschool.work.databinding.FragmentLoginBinding
 import ru.myitschool.work.ui.main.MainDestination
 import ru.myitschool.work.utils.collectWhenStarted
-import ru.myitschool.work.utils.visibleOrGone
 import ru.myitschool.work.utils.TextChangedListener
 
 @AndroidEntryPoint
@@ -27,12 +25,12 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         binding.username.addTextChangedListener(TextChangedListener(binding, onChange = { viewModel.onUsernameChanged(it) }))
         binding.login.setOnClickListener {
-            tryLogin(binding.username.text.toString())
+            login(binding.username.text.toString())
         }
         subscribe()
     }
 
-    private fun tryLogin(username: String) {
+    private fun login(username: String) {
         viewModel.tryLogin(username) {
             findNavController().apply {
                 popBackStack<LoginDestination>(true)
@@ -44,7 +42,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private fun subscribe() {
         viewModel.savedUsername.collectWhenStarted(this) { username ->
             if (!username.isNullOrBlank()) {
-                tryLogin(username)
+                login(username)
             }
         }
         viewModel.state.collectWhenStarted(this) { state ->

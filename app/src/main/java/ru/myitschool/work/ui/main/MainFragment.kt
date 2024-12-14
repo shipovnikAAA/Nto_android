@@ -29,8 +29,12 @@ class MainFragment: Fragment(R.layout.fragment_main) {
       viewModel.loadPersonInfo(user)
       binding.refresh.setOnClickListener { viewModel.loadPersonInfo(user) }
       binding.logout.setOnClickListener {
-        viewModel.logout()
-        findNavController().navigateUp()
+        viewModel.logout {
+          findNavController().apply {
+            popBackStack<MainDestination>(true)
+            navigate(LoginDestination)
+          }
+        }
       }
     }
     subscribe()

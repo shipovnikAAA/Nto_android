@@ -35,6 +35,9 @@ class LoginViewModel @Inject constructor(
             dataStoreManager.lastUsername.distinctUntilChanged().collect { lastUsername ->
                 if (lastUsername.isNotEmpty()) {
                     _savedUsername.update { lastUsername }
+                } else {
+                    _savedUsername.update { null }
+                    _state.update { LoginState() }
                 }
             }
         }
