@@ -11,6 +11,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.myitschool.work.R
 import ru.myitschool.work.databinding.FragmentMainBinding
 import ru.myitschool.work.ui.login.LoginDestination
+import ru.myitschool.work.ui.qr.result.QrResultDestination
+import ru.myitschool.work.ui.qr.scan.QrScanDestination
 import ru.myitschool.work.utils.collectWhenStarted
 
 @AndroidEntryPoint
@@ -35,6 +37,10 @@ class MainFragment: Fragment(R.layout.fragment_main) {
             navigate(LoginDestination)
           }
         }
+      }
+      binding.scan.setOnClickListener {
+        findNavController().navigate(QrResultDestination(user))
+        findNavController().navigate(QrScanDestination)
       }
     }
     subscribe()

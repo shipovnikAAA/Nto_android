@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="close_button">Close</string>
+    <string name="cancel_result">Operation was cancelled</string>
+    <string name="success_result">Success</string>
+    <string name="failure_result">Something wrong</string>
 </resources>

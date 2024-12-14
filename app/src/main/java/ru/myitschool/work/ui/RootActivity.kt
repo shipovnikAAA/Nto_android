@@ -13,6 +13,8 @@ import ru.myitschool.work.ui.login.LoginDestination
 import ru.myitschool.work.ui.login.LoginFragment
 import ru.myitschool.work.ui.main.MainDestination
 import ru.myitschool.work.ui.main.MainFragment
+import ru.myitschool.work.ui.qr.result.QrResultDestination
+import ru.myitschool.work.ui.qr.result.QrResultFragment
 import ru.myitschool.work.ui.qr.scan.QrScanDestination
 import ru.myitschool.work.ui.qr.scan.QrScanFragment
 import java.text.SimpleDateFormat
@@ -40,6 +42,7 @@ class RootActivity : AppCompatActivity() {
                 fragment<LoginFragment, LoginDestination>()
                 fragment<QrScanFragment, QrScanDestination>()
                 fragment<MainFragment, MainDestination>()
+                fragment<QrResultFragment, QrResultDestination>()
             }
         }
 

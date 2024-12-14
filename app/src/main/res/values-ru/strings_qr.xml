@@ -3,4 +3,7 @@
     <string name="close_button">Закрыть</string>
     <string name="login_button">Войти</string>
     <string name="username_label">Логин</string>
+    <string name="cancel_result">Вход был отменён</string>
+    <string name="success_result">Успешно</string>
+    <string name="failure_result">Что-то пошло не так</string>
 </resources>
