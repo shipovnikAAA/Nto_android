@@ -25,7 +25,7 @@ class MainViewModel @Inject constructor(
   val state = _state.asStateFlow()
 
   private val dfo = SimpleDateFormat("yyyy-MM-dd HH:mm")
-  private val dfi= SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+  private val dfi= SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
   fun loadPersonInfo(username: String) {
     viewModelScope.launch {
