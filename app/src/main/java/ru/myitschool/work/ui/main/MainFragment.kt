@@ -10,6 +10,7 @@ import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import ru.myitschool.work.R
 import ru.myitschool.work.databinding.FragmentMainBinding
+import ru.myitschool.work.ui.login.LoginDestination
 import ru.myitschool.work.utils.collectWhenStarted
 
 @AndroidEntryPoint
@@ -27,6 +28,10 @@ class MainFragment: Fragment(R.layout.fragment_main) {
     username?.let { user ->
       viewModel.loadPersonInfo(user)
       binding.refresh.setOnClickListener { viewModel.loadPersonInfo(user) }
+      binding.logout.setOnClickListener {
+        viewModel.logout()
+        findNavController().navigateUp()
+      }
     }
     subscribe()
   }

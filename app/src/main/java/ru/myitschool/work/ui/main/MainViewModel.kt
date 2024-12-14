@@ -8,18 +8,21 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import ru.myitschool.work.data.remote.LoginApi
 import ru.myitschool.work.data.remote.ErrorDto
+import ru.myitschool.work.di.AppModule
 import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
   @ApplicationContext private val context: Context,
-  private val api: LoginApi
+  private val api: LoginApi,
+  private val dataStoreManager: AppModule.DataStoreManager
 ) : ViewModel() {
   private val _state = MutableStateFlow(MainState())
   val state = _state.asStateFlow()
@@ -27,12 +30,21 @@ class MainViewModel @Inject constructor(
   private val dfo = SimpleDateFormat("yyyy-MM-dd HH:mm")
   private val dfi= SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
+  init {
+    viewModelScope.launch {
+      dataStoreManager.lastUsername.distinctUntilChanged().collect { lastUsername ->
+        _state.update { it.copy(isLoggedIn = lastUsername.isNotEmpty()) }
+      }
+    }
+  }
+
   fun loadPersonInfo(username: String) {
     viewModelScope.launch {
       try {
         val info = api.info(username)
         _state.update {
           MainState(
+            isLoggedIn = true,
             fullName = info.name,
             photo = info.photo,
             position = info.position,
@@ -46,6 +58,7 @@ class MainViewModel @Inject constructor(
           val errorDto = gson.fromJson(errorString, ErrorDto::class.java)
           _state.update {
             MainState(
+              isLoggedIn = false,
               error = errorDto.error
             )
           }
@@ -53,6 +66,12 @@ class MainViewModel @Inject constructor(
       } catch (e: Exception) {
         _state.update { MainState(error = "Unknown error: ${e.message}") }
       }
+    }
+  }
+
+  fun logout() {
+    viewModelScope.launch {
+      dataStoreManager.setLastUsername("")
     }
   }
 }

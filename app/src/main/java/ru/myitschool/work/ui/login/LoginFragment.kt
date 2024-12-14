@@ -27,18 +27,26 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         binding.username.addTextChangedListener(TextChangedListener(binding, onChange = { viewModel.onUsernameChanged(it) }))
         binding.login.setOnClickListener {
-            val username = binding.username.text.toString()
-            viewModel.tryLogin(username) {
-                findNavController().apply {
-                    popBackStack<LoginDestination>(true)
-                    navigate(MainDestination(username))
-                }
-            }
+            tryLogin(binding.username.text.toString())
         }
         subscribe()
     }
 
+    private fun tryLogin(username: String) {
+        viewModel.tryLogin(username) {
+            findNavController().apply {
+                popBackStack<LoginDestination>(true)
+                navigate(MainDestination(username))
+            }
+        }
+    }
+
     private fun subscribe() {
+        viewModel.savedUsername.collectWhenStarted(this) { username ->
+            if (!username.isNullOrBlank()) {
+                tryLogin(username)
+            }
+        }
         viewModel.state.collectWhenStarted(this) { state ->
             binding.login.isEnabled = state.isLoginEnabled
             if (state.error != null) {

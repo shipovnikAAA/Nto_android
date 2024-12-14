@@ -1,12 +1,16 @@
 package ru.myitschool.work.di
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import dagger.Binds
+import android.content.Context
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.myitschool.work.core.Constants
@@ -27,4 +31,17 @@ object AppModule {
   @Provides
   @Singleton
   fun provideLoginApi(retrofit: Retrofit) = retrofit.create(LoginApi::class.java)
+
+  private val Context.dataStore by preferencesDataStore("settings")
+
+  @Singleton
+  class DataStoreManager @Inject constructor(@ApplicationContext appContext: Context) {
+    private val settingsDataStore = appContext.dataStore
+    private val lastUsernameKey = stringPreferencesKey("last_username")
+    val lastUsername: Flow<String>
+      get() = settingsDataStore.data.map { it[lastUsernameKey].orEmpty() }
+
+    suspend fun setLastUsername(username: String) =
+      settingsDataStore.edit { it[lastUsernameKey] = username }
+  }
 }
