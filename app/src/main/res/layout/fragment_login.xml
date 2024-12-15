@@ -7,8 +7,9 @@
 
     <EditText
         android:id="@+id/username"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        tools:visibility="visible"
+        android:layout_width="256dp"
+        android:layout_height="48dp"
         android:layout_marginTop="256dp"
         android:ems="10"
         android:hint="@string/username_label"
@@ -19,8 +20,9 @@
 
     <Button
         android:id="@+id/login"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        tools:visibility="visible"
+        android:layout_width="256dp"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:text="@string/login_button"
         app:layout_constraintEnd_toEndOf="@+id/username"
@@ -29,9 +31,11 @@
 
     <TextView
         android:id="@+id/error"
-        android:layout_width="wrap_content"
+        tools:visibility="visible"
+        android:layout_width="256dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:textAlignment="center"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/login"

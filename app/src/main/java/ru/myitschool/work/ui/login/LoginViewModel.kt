@@ -43,9 +43,6 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun isUsernameValid(username: String): Boolean =
-        !(username.length < 3 || username[0].isDigit() || !username.matches(Regex("^[a-zA-Z0-9]+$")))
-
     fun tryLogin(username: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
@@ -69,4 +66,21 @@ class LoginViewModel @Inject constructor(
 
     fun onUsernameChanged(username: String) =
         _state.update { it.copy(isLoginEnabled = isUsernameValid(username), error = null) }
+
+    companion object {
+        fun isUsernameValid(username: String): Boolean {
+            return !(username.isEmpty() || username.length < 3 || username.first().isDigit() || !username.isAscii())
+        }
+
+        private fun String.isAscii(): Boolean {
+            for (char in this) {
+                if (char.code < 'A'.code || char.code > 'z'.code || char == '\\') {
+                    if (!char.isDigit()) {
+                        return false
+                    }
+                }
+            }
+            return true
+        }
+    }
 }
