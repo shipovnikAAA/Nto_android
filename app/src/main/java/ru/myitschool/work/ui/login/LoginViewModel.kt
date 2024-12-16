@@ -30,7 +30,7 @@ class LoginViewModel @Inject constructor(
     private val _savedUsername = MutableStateFlow<String?>(null)
     val savedUsername = _savedUsername.asStateFlow()
 
-    init {
+    fun initialize() {
         viewModelScope.launch {
             dataStoreManager.lastUsername.distinctUntilChanged().collect { lastUsername ->
                 if (lastUsername.isNotEmpty()) {
@@ -46,7 +46,10 @@ class LoginViewModel @Inject constructor(
     fun tryLogin(username: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
-                api.auth(username)
+                val resp = api.auth(username)
+                if (resp.code() != 200) {
+                    throw HttpException(resp)
+                }
                 Log.d("LoginViewModel", "Login success for $username")
                 dataStoreManager.setLastUsername(username)
                 onSuccess()
@@ -73,14 +76,14 @@ class LoginViewModel @Inject constructor(
 
     companion object {
         fun isUsernameValid(username: String): Boolean {
-    if (username.isEmpty() || username.length < 3 || username.first().isDigit()) {
-        return false
-    }
-    return username.all { it.isLetterOrDigit() && it.isAsciiPrintable() }
-}
+            if (username.isEmpty() || username.length < 3 || username.first().isDigit()) {
+                return false
+            }
+            return username.all { it.isLetterOrDigit() && it.isAsciiPrintable() }
+        }
 
-private fun Char.isAsciiPrintable(): Boolean {
-    return this.code in 32..126
-}
+        private fun Char.isAsciiPrintable(): Boolean {
+            return this.code in 32..126
+        }
     }
 }

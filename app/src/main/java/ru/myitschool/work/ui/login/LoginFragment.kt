@@ -25,6 +25,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         binding.username.addTextChangedListener(TextChangedListener { viewModel.onUsernameChanged(it) })
         subscribe()
+        viewModel.initialize()
         binding.login.setOnClickListener {
             login(binding.username.text.toString())
         }
