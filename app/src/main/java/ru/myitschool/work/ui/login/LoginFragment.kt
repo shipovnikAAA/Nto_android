@@ -24,10 +24,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         _binding = FragmentLoginBinding.bind(view)
 
         binding.username.addTextChangedListener(TextChangedListener { viewModel.onUsernameChanged(it) })
+        subscribe()
         binding.login.setOnClickListener {
             login(binding.username.text.toString())
         }
-        subscribe()
     }
 
     private fun login(username: String) {
@@ -40,11 +40,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun subscribe() {
-        viewModel.savedUsername.collectWhenStarted(this) { username ->
-            if (!username.isNullOrBlank()) {
-                login(username)
-            }
-        }
         viewModel.state.collectWhenStarted(this) { state ->
             binding.login.isEnabled = state.isLoginEnabled
             if (state.error != null) {
@@ -52,6 +47,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 binding.error.text = state.error
             } else {
                 binding.error.visibility = View.GONE
+            }
+        }
+        viewModel.savedUsername.collectWhenStarted(this) { username ->
+            if (!username.isNullOrBlank()) {
+                login(username)
             }
         }
     }

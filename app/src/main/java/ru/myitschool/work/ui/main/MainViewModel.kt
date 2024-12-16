@@ -31,21 +31,12 @@ class MainViewModel @Inject constructor(
   private val dfo = SimpleDateFormat("yyyy-MM-dd HH:mm")
   private val dfi= SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
-  init {
-    viewModelScope.launch {
-      dataStoreManager.lastUsername.distinctUntilChanged().collect { lastUsername ->
-        _state.update { it.copy(isLoggedIn = lastUsername.isNotEmpty()) }
-      }
-    }
-  }
-
   fun loadPersonInfo(username: String) {
     viewModelScope.launch {
       try {
         val info = api.info(username)
         _state.update {
           MainState(
-            isLoggedIn = true,
             fullName = info.name,
             photo = info.photo,
             position = info.position,
@@ -60,13 +51,12 @@ class MainViewModel @Inject constructor(
             val errorDto = gson.fromJson(errorString, ErrorDto::class.java)
             _state.update {
               MainState(
-                isLoggedIn = false,
                 error = errorDto.error
               )
             }
           }
         } catch (e: Exception) {
-          _state.update { MainState(isLoggedIn = false, error = httpException.message()) }
+          _state.update { MainState(error = httpException.message()) }
         }
       } catch (e: Exception) {
         _state.update { MainState(error = "Unknown error: ${e.message}") }
@@ -77,7 +67,6 @@ class MainViewModel @Inject constructor(
   fun logout(onLogout: () -> Unit) {
     viewModelScope.launch {
       dataStoreManager.setLastUsername("")
-      _state.update { MainState() }
       onLogout()
     }
   }
