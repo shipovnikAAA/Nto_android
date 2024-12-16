@@ -25,13 +25,14 @@
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:text="@string/login_button"
+        android:enabled="false"
         app:layout_constraintEnd_toEndOf="@+id/username"
         app:layout_constraintStart_toStartOf="@+id/username"
         app:layout_constraintTop_toBottomOf="@+id/username" />
 
     <TextView
         android:id="@+id/error"
-        tools:visibility="visible"
+        tools:visibility="gone"
         android:layout_width="256dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
