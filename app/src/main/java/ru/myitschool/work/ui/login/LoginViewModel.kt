@@ -50,12 +50,16 @@ class LoginViewModel @Inject constructor(
                 Log.d("LoginViewModel", "Login success for $username")
                 dataStoreManager.setLastUsername(username)
                 onSuccess()
-            } catch (e: HttpException) {
-                Log.e("LoginViewModel", "Login failed for $username", e)
-                e.response()?.errorBody()?.string()?.let { errorString ->
-                    val gson = GsonBuilder().create()
-                    val errorDto = gson.fromJson(errorString, ErrorDto::class.java)
-                    _state.update { it.copy(error = errorDto.error) }
+            } catch (httpExc: HttpException) {
+                Log.e("LoginViewModel", "Login failed for $username", httpExc)
+                try {
+                    httpExc.response()?.errorBody()?.string()?.let { errorString ->
+                        val gson = GsonBuilder().create()
+                        val errorDto = gson.fromJson(errorString, ErrorDto::class.java)
+                        _state.update { it.copy(error = errorDto.error) }
+                    }
+                } catch (e: Exception) {
+                    _state.update { it.copy(error = httpExc.message()) }
                 }
             } catch (e: Exception) {
                 Log.e("LoginViewModel", "Login failed for $username", e)

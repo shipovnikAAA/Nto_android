@@ -53,16 +53,20 @@ class MainViewModel @Inject constructor(
             error = null
           )
         }
-      } catch (e: HttpException) {
-        e.response()?.errorBody()?.string()?.let { errorString ->
-          val gson = GsonBuilder().create()
-          val errorDto = gson.fromJson(errorString, ErrorDto::class.java)
-          _state.update {
-            MainState(
-              isLoggedIn = false,
-              error = errorDto.error
-            )
+      } catch (httpException: HttpException) {
+        try {
+          httpException.response()?.errorBody()?.string()?.let { errorString ->
+            val gson = GsonBuilder().create()
+            val errorDto = gson.fromJson(errorString, ErrorDto::class.java)
+            _state.update {
+              MainState(
+                isLoggedIn = false,
+                error = errorDto.error
+              )
+            }
           }
+        } catch (e: Exception) {
+          _state.update { MainState(isLoggedIn = false, error = httpException.message()) }
         }
       } catch (e: Exception) {
         _state.update { MainState(error = "Unknown error: ${e.message}") }
