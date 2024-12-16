@@ -7,10 +7,10 @@
 
     <EditText
         android:id="@+id/username"
-        android:layout_width="256dp"
-        android:layout_height="48dp"
+        android:layout_width="384dp"
+        android:layout_height="96dp"
         android:layout_marginTop="16dp"
-        android:ems="10"
+        android:ems="16"
         android:hint="@string/username_label"
         android:inputType="text"
         android:visibility="visible"
