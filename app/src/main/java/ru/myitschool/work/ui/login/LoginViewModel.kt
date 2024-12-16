@@ -69,18 +69,14 @@ class LoginViewModel @Inject constructor(
 
     companion object {
         fun isUsernameValid(username: String): Boolean {
-            return !(username.isEmpty() || username.length < 3 || username.first().isDigit() || !username.isAscii())
-        }
+    if (username.isEmpty() || username.length < 3 || username.first().isDigit()) {
+        return false
+    }
+    return username.all { it.isLetterOrDigit() && it.isAsciiPrintable() }
+}
 
-        private fun String.isAscii(): Boolean {
-            for (char in this) {
-                if (char.code < 'A'.code || char.code > 'z'.code || char == '\\') {
-                    if (!char.isDigit()) {
-                        return false
-                    }
-                }
-            }
-            return true
-        }
+private fun Char.isAsciiPrintable(): Boolean {
+    return this.code in 32..126
+}
     }
 }
